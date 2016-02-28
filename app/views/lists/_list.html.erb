@@ -1,0 +1,78 @@
+<% cache([list, suggest]) do %>
+<div class="list media list-">
+	<div class="avatar media-left">
+		<%= user_avatar_tag(topic.user, :normal) %>
+	</div>
+	<div class="infos media-body">
+		<div class="title media-heading">
+			<%= link_to(truncate(list.title, length: 100), list_path(list), title: list.title) %>
+			<% if suggest %>
+				<i class="fa fa-thumb-tack" title="置顶"></i>
+			<% end %>
+			<%= list_excellent_tag(list) %>
+		</div>
+		<div class="info">
+			<% if action_name != "node" %>
+			<%= render_node_name(list.node_name, list.node_id) %>
+			.
+			<% end %>
+			<%= user_name_tag(list.user) %>
+			<span class="hidden-mobile">
+				.
+				<% if list.last_reply_user_login.blank? %>
+					<%= raw t("common.created_at", time: timeago(list.created_at)) %>
+				<% else %>
+					<%= t("common.last_by")%> <%= user_name_tag(list.last_reply_user_login) %> <%= raw t("common.reply_at", time: timeago(list.replied_at)) %>
+				<% end %>
+			</span>
+			<% end %>
+		</div>
+	</div>
+	<div class="count media-right">
+		<% if list.replies_count > 0 %>
+			<%= link_to(list.replies_count, "#{list_path(list)}#reply#{list.replies_count}", class: "state-false") %>
+		<% end %>
+	</div>
+</div>
+<% end %>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

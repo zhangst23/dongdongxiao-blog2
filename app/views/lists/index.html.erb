@@ -1,25 +1,69 @@
-<p id="notice"><%= notice %></p>
+<div class="row">
+  <div class="col-md-9">
+    <div class="lists panel panel-default">
+      <div class="panel-heading clearfix">
+        <%= render "lists/node_info", node: @node %>
+      </div>
+      <div class="panel-body">
+        <% if @lists.current_page == 1 %>
+          <% cache(['suggest_lists', @suggest_lists.to_a]) do %>
+            <%= render partial: "lists/list", collection: @suggest_lists, locals: { suggest: true } %>
+          <% end %>
+        <% end %>
 
-<h1>Listing Lists</h1>
+        <% cache(['lists', @lists.to_a]) do %>
+          <%= render @lists, suggest: false %>
+        <% end %>
+      </div>
+      
+      <div class="panel-footer clearfix">
+        <%= will_paginate @lists %>
+      </div>
 
-<table>
-  <thead>
-    <tr>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
+    </div>
 
-  <tbody>
-    <% @lists.each do |list| %>
-      <tr>
-        <td><%= link_to 'Show', list %></td>
-        <td><%= link_to 'Edit', edit_list_path(list) %></td>
-        <td><%= link_to 'Destroy', list, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
+    <% if controller_name == "lists" && action_name == "index" && !mobile? %>
+      <%= render "/shared/index_sections" %>
+      <%= render "/shared/hot_locations" %>
     <% end %>
-  </tbody>
-</table>
 
-<br>
+    <% if current_user %>
+    <script type="text/javascript">
+      var readed_list_ids = <%= current_user.filter_readed_lists(@lists + (@suggest_lists || [])) %>;
+      for (var i = 0; i < readed_list_ids.length; i++) {
+        list_id = readed_list_ids[i];
+        $(".list-"+ list_id + " .count a").addClass("state-true");
+      }
+    </script>
+    <% end %>
 
-<%= link_to 'New List', new_list_path %>
+  </div>
+
+
+  <div class="sidebar col-md-3">
+    <%= render "topics/sidebar_for_list_index" %>
+  </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,6 +1,6 @@
-<h1>Editing List</h1>
-
-<%= render 'form' %>
-
-<%= link_to 'Show', @list %> |
-<%= link_to 'Back', lists_path %>
+<div class="panel panel-default">
+	<div class="panel-heading">修改清单 <span class="pull-right hidden-xs"><%= list_title_tag(@list) %></span> </div>
+	<div class="panel-body">
+		<%= render 'form' %>
+	</div>
+</div>

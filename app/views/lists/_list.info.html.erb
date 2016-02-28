@@ -1,0 +1,15 @@
+<div class="panel-heading media clearfix">
+	<div class="media-body">
+		<h1 class="media-heading"><%= list.title %></h1>
+		<div class="info">
+			<%= render_node_name(list.node_name, list.node_id) %>
+			.
+			<%= user_name_tag(list.user, data: { author: true }) %>
+			.
+
+		</div>
+	</div>
+	<div class="avatar media-right">
+		<%= user_avatar_tag(@topic.user, :normal) %>
+	</div>
+</div>
