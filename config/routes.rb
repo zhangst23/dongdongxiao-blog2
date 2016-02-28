@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   
   
+  resources :nodes
   resources :homes
 
   resources :lists do
