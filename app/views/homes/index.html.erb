@@ -1,27 +1,68 @@
-<p id="notice"><%= notice %></p>
+<%= raw SiteConfig.inde_html %>
 
-<h1>Listing Homes</h1>
+<div class="row home-icons hidden-sm hidden-xs">
+  <div class="col-md-3">
+    <div class="item item1">
+      <div class="icon">
+        <a href="<%= lists_path %>"><i class="fa fa-comments-o"></i></a>
+      </div>
+      <div class="text">
+        <a href="<%= lists_path %>">鹦鹉学习 <i class="pull-right fa fa-arrow-right"></i></a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="item item2">
+      <div class="icon">
+        <a href="<%= wikis_path %>"><i class="fa fa-wiki"></i></a>
+      </div>
+      <div class="text">
+        <a href="<%= wikis_path %>">专题 <i class="pull-right fa fa-arrow-right"></i></a>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class="item item3">
+      <div class="icon">
+        <a href="<%= explores_path %>"><i class="fa fa-explores"></i></a>
+      </div>
+      <div class="text">
+        <a href="<%= explores_path %>">探索 <i class="pull-right fa fa-arrow-right"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
 
-<table>
-  <thead>
-    <tr>
-      <th>Index</th>
-      <th colspan="3"></th>
-    </tr>
-  </thead>
+<div class="home_suggest_lists panel panel-default">
+  <div class="panel-heading">社区精华清单</div>
+  <div class="panel-body lists row">
+    <%
+      odd_lists, even_lists = @excellent_lists.partition.each_with_index { |t, i| i.odd? }
+    %>
+    <div class="col-md-6 lists-group">
+      <% cache([odd_lists, "odd"]) do %>
+        <%= render partial: "lists/list", collection: odd_lists, locals: { suggest:false } %>
+      <% end %>
+    </div>
+    <div class="col-md-6 lists-group">
+      <% cache([even_lists, "even"]) do %>
+        <%= render partial: "lists/list", collection: even_lists, locals: { suggest:false } %>
+      <% end %>
+    </div>
+  </div>
+  <div class="panel-footer">
+    <%= link_to "查看更多精华清单...", excellent_lists_path %>
+  </div>
+</div>
 
-  <tbody>
-    <% @homes.each do |home| %>
-      <tr>
-        <td><%= home.index %></td>
-        <td><%= link_to 'Show', home %></td>
-        <td><%= link_to 'Edit', edit_home_path(home) %></td>
-        <td><%= link_to 'Destroy', home, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+<% if !mobile? %>
+  <%= render "/shared/index_sections" %>
+  <%= render "/shared/hot_locations" %>
+<% end %>
 
-<br>
 
-<%= link_to 'New Home', new_home_path %>
+
+
+
+
+
