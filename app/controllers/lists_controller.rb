@@ -42,10 +42,53 @@ class ListsController < ApplicationController
     ).page(params[:page]).records
   end
 
+  def feed
+    @lists = List.without_hide_nodes.recent.without_body.limit(20).include(:node, :user, :last_reply_user)
+    render layout: false
+  end
+
+  def node
+    @node = Node.find(params[:id])
+    @lists = @node.lists.last_actived.fields_for_list
+    @lists = @lists.includes(:user).piginate(page: params[:page], per_page: 25)
+    set_seo_meta title, "#{Setting.app_name}#{'menu.lists'}#{@node.name}", @node.summary
+    render action: 'index'
+  end
+
+  def node_feed
+    @node = Node.find(params[:id])
+    @lists = @node.lists.recent.without_body.limit(20)
+    render layout: false
+  end
+
+  %w(no_reply popular).each do |name|
+    define_method(name) do
+      @lists = List.without_hide_nodes.send(name.to_sym).last_actived.fields_for_list.includes(:user)
+      @lists = @lists.paginate(page: params[:page], per_page: 25, total_entries: 1500)
+
+      set_seo_meta [t("lists.list_list.#{name}"), t('menu.topics')].join(' &raquo; ')
+      render action: 'index'
+    end
+  end
+
+  def recent
+    @lists = List.without_hide_nodes.recent.fields_for_list.includes(:user)
+    @lists = @lists.paginate(page: params[:page], per_page: 25, total_entries: 1500)
+    set_seo_meta [t('topics.topic_list.recent'), t('menu.topics')].join(' &raquo; ')
+    render action: 'index'
+  end
+
+  def excellent
+    @lists = List.excellent.recent.fields_for_list.includes(:user)
+    @lists = @lists.paginate(page: params[:page], per_page: 25, total_entries: 1500)
+
+    set_seo_meta [t('topics.topic_list.excellent'), t('menu.topics')].join(' &raquo; ')
+    render action: 'index'
+  end
 
 
-  # GET /lists/1
-  # GET /lists/1.json
+
+
   def show
     @list = List.find params[:id]
 

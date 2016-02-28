@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160228184403) do
+ActiveRecord::Schema.define(version: 20160228195558) do
 
   create_table "categories", force: :cascade do |t|
     t.string   "name"
@@ -43,10 +43,34 @@ ActiveRecord::Schema.define(version: 20160228184403) do
     t.integer  "user_id"
   end
 
+  create_table "nodes", force: :cascade do |t|
+    t.string   "name"
+    t.string   "summary"
+    t.integer  "section_id"
+    t.integer  "sort"
+    t.integer  "lists_count"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
   create_table "posts", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer  "user_id"
+  end
+
+  create_table "replies", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "topic_id"
+    t.text     "body"
+    t.text     "body_html"
+    t.integer  "state"
+    t.integer  "liked_user_ids"
+    t.integer  "likes_count"
+    t.integer  "mentioned_user_ids"
+    t.datetime "deleted_at"
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
   end
 
   create_table "users", force: :cascade do |t|
