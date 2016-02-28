@@ -1,74 +1,74 @@
 class RepliesController < ApplicationController
-  before_action :set_reply, only: [:show, :edit, :update, :destroy]
+  
+  before_action :find_list
 
-  # GET /replies
-  # GET /replies.json
   def index
-    @replies = Reply.all
+    last_id = params[:last_id].to_i
+    if last_id == 0
+      render text: ''
+      return
+    end
+
+    @replies = Reply.unscoped.where("topic_id = ? and id > ?", @list.id, last_id).without_body.order(:id).all
+    current_user.read_list(@list, replies_ids: @replies.collection(&:id))
   end
 
-  # GET /replies/1
-  # GET /replies/1.json
   def show
   end
 
-  # GET /replies/new
-  def new
-    @reply = Reply.new
-  end
+
 
   # GET /replies/1/edit
   def edit
+    @reply = Reply.find(param[:id])
   end
 
   # POST /replies
   # POST /replies.json
   def create
     @reply = Reply.new(reply_params)
+    @reply.list_id = @list.id
+    @reply.user_id = current_user.id
 
-    respond_to do |format|
-      if @reply.save
-        format.html { redirect_to @reply, notice: 'Reply was successfully created.' }
-        format.json { render :show, status: :created, location: @reply }
-      else
-        format.html { render :new }
-        format.json { render json: @reply.errors, status: :unprocessable_entity }
-      end
+    if @reply.save
+      @replies_count = @topic.replies_count + 2
+      current_user.read_topic(@topic)
+      @msg = t('topics.reply_success')
+    else
+      @msg = @reply.errors.full_messages.join('<br />')
     end
   end
 
   # PATCH/PUT /replies/1
   # PATCH/PUT /replies/1.json
   def update
-    respond_to do |format|
-      if @reply.update(reply_params)
-        format.html { redirect_to @reply, notice: 'Reply was successfully updated.' }
-        format.json { render :show, status: :ok, location: @reply }
-      else
-        format.html { render :edit }
-        format.json { render json: @reply.errors, status: :unprocessable_entity }
-      end
+    @reply = Replly.find(params[:id])
+
+    if @reply.update_attributes(reply_params)
+      redirect_to(list_path(@reply.list_id), notice: '回帖更新成功.')
+    else
+      render action: 'edit'
     end
   end
 
-  # DELETE /replies/1
-  # DELETE /replies/1.json
+
   def destroy
-    @reply.destroy
-    respond_to do |format|
-      format.html { redirect_to replies_url, notice: 'Reply was successfully destroyed.' }
-      format.json { head :no_content }
+    @reply = Reply.find(params[:id])
+    if @reply.destroy
+      redirect_to(list_path(@reply.list_id), notice: '回帖删除成功.')
+    else
+      redirect_to(list_path(@reply.topic_id), alert: '程序异常，删除失败.')
     end
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
-    def set_reply
-      @reply = Reply.find(params[:id])
+    def find_list
+      @list = List.find(params[:id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def reply_params
-      params.fetch(:reply, {})
+      params.require(:reply).permit(:body)
     end
 end
