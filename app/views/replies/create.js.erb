@@ -1,0 +1,11 @@
+<% if !@reply.errors.blank? %>
+	_listView.replyCallback(0, '<%= j(@msg) %>')
+<% else %>
+	<% if @reply.upvote? %>
+		Turbolinks.visit(location.href);
+	<% else %>
+		<%= render 'create_call', reply: @reply %>
+
+		_listView.replyCallback(1, '<%= j(@msg) %>');
+	<% end %>
+<% end %>
