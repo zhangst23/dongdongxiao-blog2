@@ -1,6 +1,7 @@
 Rails.application.routes.draw do
   
   
+  resources :notifications
   resources :replies
   resources :nodes
   resources :homes

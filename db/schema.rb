@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160228195558) do
+ActiveRecord::Schema.define(version: 20160229102640) do
 
   create_table "categories", force: :cascade do |t|
     t.string   "name"
@@ -51,6 +51,11 @@ ActiveRecord::Schema.define(version: 20160228195558) do
     t.integer  "lists_count"
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
+  end
+
+  create_table "notifications", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "posts", force: :cascade do |t|
